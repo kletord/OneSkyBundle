@@ -52,14 +52,14 @@ class FileGatewayImpl implements FileGateway
      */
     private function downloadTranslation(ExportFile $file)
     {
-        $this->eventDispatcher->dispatch(
-            TranslationDownloadTranslationEvent::getEventName(),
-            new TranslationDownloadTranslationEvent($file)
-        );
         $downloadedContent = $this->client->translations(self::DOWNLOAD_METHOD, $file->format());
         $this->checkTranslation($downloadedContent, $file);
         file_put_contents($file->getTargetFilePath(), $downloadedContent);
 
+        $this->eventDispatcher->dispatch(
+            TranslationDownloadTranslationEvent::getEventName(),
+            new TranslationDownloadTranslationEvent($file)
+        );
         return $file;
     }
 
@@ -99,12 +99,12 @@ class FileGatewayImpl implements FileGateway
      */
     private function uploadTranslation(UploadFile $file)
     {
+        $this->client->files(self::UPLOAD_METHOD, $file->format());
+
         $this->eventDispatcher->dispatch(
             TranslationUploadTranslationEvent::getEventName(),
             new TranslationUploadTranslationEvent($file)
         );
-        $this->client->files(self::UPLOAD_METHOD, $file->format());
-
         return $file;
     }
 
