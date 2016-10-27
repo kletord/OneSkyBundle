@@ -21,6 +21,7 @@ class OpenClassroomsOneSkyExtension extends Extension
         $loader->load('services.xml');
         $config = $this->processConfiguration(new Configuration(), $configs);
         $this->processParameters($container, $config);
+        $this->addThreadGateway($loader, $container);
     }
 
     private function processParameters(ContainerBuilder $container, array $config)
@@ -33,6 +34,13 @@ class OpenClassroomsOneSkyExtension extends Extension
         $container->setParameter('openclassrooms_onesky.file_format', $config['file_format']);
         $container->setParameter('openclassrooms_onesky.file_paths', $config['file_paths']);
         $container->setParameter('openclassrooms_onesky.keep_all_strings', $config['keep_all_strings']);
+    }
+
+    private function addThreadGateway(XmlFileLoader $loader, ContainerBuilder $container)
+    {
+        if (extension_loaded('pthread')) {
+            $loader->load('services_pthread.xml');
+        }
     }
 
     /**

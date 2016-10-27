@@ -1,0 +1,40 @@
+<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://symfony.com/schema/dic/services" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="openclassrooms.onesky.lockable_event_dispatcher"
+                 class="Symfony\Component\EventDispatcher\LockableEventDispatcher"
+                 decorates="openclassrooms.onesky.event_dispatcher">
+            <argument type="service" id="openclassrooms.onesky.lockable_event_dispatcher.inner" />
+        </service>
+
+        <service id="openclassrooms.onesky.gateways.file_thread" class="OpenClassrooms\Bundle\OneSkyBundle\Gateways\Impl\ThreadFileGatewayImpl">
+            <call method="setDownloadFactory">
+                <argument type="service" id="openclassrooms.onesky.gateways.thread_file_gateway.download_factory"/>
+            </call>
+            <call method="setUploadFactory">
+                <argument type="service" id="openclassrooms.onesky.gateways.thread_file_gateway.upload_factory"/>
+            </call>
+        </service>
+
+        <service id="openclassrooms.onesky.gateways.thread_file_gateway.download_factory"
+                 class="OpenClassrooms\Bundle\OneSkyBundle\Gateways\Impl\ThreadFileGatewayImpl\DownloadFactory"
+                 public="false">
+            <call method="setClient">
+                <argument type="service" id="openclassrooms.onesky.client"/>
+            </call>
+            <call method="setEventDispatcher">
+                <argument type="service" id="openclassrooms.onesky.event_dispatcher"/>
+            </call>
+        </service>
+
+        <service id="openclassrooms.onesky.gateways.thread_file_gateway.upload_factory"
+                 class="OpenClassrooms\Bundle\OneSkyBundle\Gateways\Impl\ThreadFileGatewayImpl\UploadFactory"
+                 public="false">
+            <call method="setClient">
+                <argument type="service" id="openclassrooms.onesky.client"/>
+            </call>
+            <call method="setEventDispatcher">
+                <argument type="service" id="openclassrooms.onesky.event_dispatcher"/>
+            </call>
+        </service>
+    </services>
+</container>
